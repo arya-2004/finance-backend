@@ -1,17 +1,24 @@
 import prisma from '../../config/database'
 
+interface Transaction {
+  type: string
+  amount: number
+  category: string
+  date: Date
+}
+
 export const getSummary = async () => {
   const transactions = await prisma.transaction.findMany({
     where: { isDeleted: false }
   })
 
   const totalIncome = transactions
-    .filter(t => t.type === 'INCOME')
-    .reduce((sum, t) => sum + t.amount, 0)
+    .filter((t: Transaction) => t.type === 'INCOME')
+    .reduce((sum: number, t: Transaction) => sum + t.amount, 0)
 
   const totalExpenses = transactions
-    .filter(t => t.type === 'EXPENSE')
-    .reduce((sum, t) => sum + t.amount, 0)
+    .filter((t: Transaction) => t.type === 'EXPENSE')
+    .reduce((sum: number, t: Transaction) => sum + t.amount, 0)
 
   return {
     totalIncome,
@@ -28,7 +35,7 @@ export const getCategoryBreakdown = async () => {
 
   const breakdown: Record<string, { income: number; expense: number }> = {}
 
-  transactions.forEach(t => {
+  transactions.forEach((t: Transaction) => {
     if (!breakdown[t.category]) {
       breakdown[t.category] = { income: 0, expense: 0 }
     }
@@ -50,8 +57,8 @@ export const getMonthlyTrends = async () => {
 
   const trends: Record<string, { income: number; expense: number }> = {}
 
-  transactions.forEach(t => {
-    const month = t.date.toISOString().slice(0, 7) // "2026-04"
+  transactions.forEach((t: Transaction) => {
+    const month = t.date.toISOString().slice(0, 7)
     if (!trends[month]) {
       trends[month] = { income: 0, expense: 0 }
     }
@@ -86,12 +93,12 @@ export const getWeeklySummary = async () => {
   })
 
   const income = transactions
-    .filter(t => t.type === 'INCOME')
-    .reduce((sum, t) => sum + t.amount, 0)
+    .filter((t: Transaction) => t.type === 'INCOME')
+    .reduce((sum: number, t: Transaction) => sum + t.amount, 0)
 
   const expense = transactions
-    .filter(t => t.type === 'EXPENSE')
-    .reduce((sum, t) => sum + t.amount, 0)
+    .filter((t: Transaction) => t.type === 'EXPENSE')
+    .reduce((sum: number, t: Transaction) => sum + t.amount, 0)
 
   return {
     income,
