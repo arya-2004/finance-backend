@@ -5,6 +5,6 @@ const adapter = new PrismaBetterSqlite3({
   url: process.env.DATABASE_URL || 'file:./dev.db'
 })
 
-const prisma = new PrismaClient({ adapter })
+const prisma = new PrismaClient({ adapter } as any)
 
 export default prisma
